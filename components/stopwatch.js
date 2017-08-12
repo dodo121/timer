@@ -21,9 +21,17 @@ class Dial extends Component {
   render() {
     return(
       <Text style={styles.dial}>
-        {`${this.props.minutes_counter.toPrecision(2)}::${this.props.seconds_counter}::${this.props.miliseconds_counter}`}
+        {`${this.formatNumber(this.props.minutes_counter)}:${this.formatNumber(this.props.seconds_counter)}:${this.props.miliseconds_counter+'0'}`}
       </Text>
     )
+  }
+
+  formatNumber = (number) => {
+    if (number < 10) {
+      return(`0${number}`);
+    } else {
+      return(number);
+    }
   }
 }
 
@@ -44,21 +52,36 @@ export default class StopWatch extends Component {
 
   startCounting = () => {
     this.setState({action: 'counting'});
-    this.coutingInterval = setInterval(() => this.updateCounter(), 1000);
+    this.coutingInterval = setInterval(() => this.updateCounter(), 100);
   };
 
   stopCounting = () => {
-    this.setState({action: 'idle'});
     clearInterval(this.coutingInterval);
+    this.setState({action: 'idle'});
   };
 
   updateCounter = () => {
-    this.setState({miliseconds_counter: this.nextValue()});
+    if (this.nextMillisecondsValue() == 10) {
+      this.setState({
+        miliseconds_counter: 0,
+        seconds_counter: this.nextSecondsValue()
+      });
+    } else {
+      this.setState({miliseconds_counter: this.nextMillisecondsValue()});
+    }
   };
 
-  nextValue = () => {
+  nextMillisecondsValue = () => {
     return(this.state.miliseconds_counter + 1);
   };
+
+  nextSecondsValue = () => {
+    if (this.state.seconds_counter < 59) {
+      return(this.state.seconds_counter + 1);
+    } else {
+      return 0;
+    }
+  }
 
   render() {
     let userControls = [];
