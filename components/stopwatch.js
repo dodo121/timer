@@ -38,12 +38,13 @@ class Dial extends Component {
 export default class StopWatch extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this._init_state = {
       action: 'idle',
       miliseconds_counter: 0,
       minutes_counter: 0,
       seconds_counter: 0
     };
+    this.state = this._init_state;
   }
 
   static navigationOptions = {
@@ -83,24 +84,47 @@ export default class StopWatch extends Component {
     }
   }
 
+  resetTimer = () => {
+    clearInterval(this.coutingInterval);
+    this.setState(this._init_state);
+  }
+
+  buttonColors = {
+    startButton: '#6AF23D',
+    stopButton: '#F50000'
+  }
+
   render() {
     let userControls = [];
     if(this.state.action == 'idle') {
       userControls.push(
-        <Button
-          onPress={() => this.startCounting()}
-          title='Start'
-          style={styles.startButton}
-        />
+        <View style={styles.controlButton} key='1'>
+          <Button
+            onPress={() => this.startCounting()}
+            title='Start'
+            color={this.buttonColors['startButton']}
+          />
+        </View>
       )
     } else {
       userControls.push(
-        <Button
-          onPress={() => this.stopCounting()}
-          title='Stop'
-          style={styles.startButton}
-        />)
+        <View style={styles.controlButton} key='1'>
+          <Button
+            onPress={() => this.stopCounting()}
+            title='Stop'
+            color={this.buttonColors['stopButton']}
+          />
+        </View>
+      )
     }
+    userControls.push(
+      <View style={styles.controlButton} key='2'>
+        <Button
+          onPress={() => this.resetTimer()}
+          title='Reset'
+        />
+      </View>
+    )
 
     //Alert.alert(this.state.minutes_counter);
     const { navigate } = this.props.navigation;
@@ -110,7 +134,7 @@ export default class StopWatch extends Component {
           miliseconds_counter={this.state.miliseconds_counter}
           minutes_counter={this.state.minutes_counter}
           seconds_counter={this.state.seconds_counter}/>
-        <View style={styles.startButton}>
+        <View style={styles.controls}>
           {userControls}
         </View>
       </View>
@@ -119,15 +143,19 @@ export default class StopWatch extends Component {
 };
 
 const styles = StyleSheet.create({
-  startButton: {
-    width: 250,
-    height: 100,
-    paddingLeft: 30,
-    paddingRight: 30
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
+
   dial: {
     fontWeight: 'bold',
     fontSize: 70,
     textAlign: 'center'
+  },
+
+  controlButton: {
+    width: 150
   }
 });
