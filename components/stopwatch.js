@@ -21,7 +21,7 @@ class Dial extends Component {
   render() {
     return(
       <Text style={styles.dial}>
-        {`${this.formatNumber(this.props.minutes_counter)}:${this.formatNumber(this.props.seconds_counter)}:${this.props.miliseconds_counter+'0'}`}
+        {this.getStr()}
       </Text>
     )
   }
@@ -33,6 +33,46 @@ class Dial extends Component {
       return(number);
     }
   }
+
+  getStr = () => {
+    return `${this.formatNumber(this.props.minutes_counter)}:${this.formatNumber(this.props.seconds_counter)}:${this.props.miliseconds_counter+'0'}`
+  }
+}
+
+class Split extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      times: []
+    }
+  }
+
+  splitTime = (ss) => {
+    currentTimes = this.state.times;
+    currentTimes.push(ss);
+    this.setState({times: currentTimes});
+  };
+
+  render() {
+    let timesList = [];
+    for(let time of this.state.times) {
+      timesList.push(
+        <Text>
+          {time}
+        </Text>
+      );
+    };
+
+    return(
+      <View>
+        <Button
+          onPress={() => this.splitTime(this.props.currentCounterState)}
+          title='Split'
+        />
+        {timesList}
+      </View>
+    )
+  }
 }
 
 export default class StopWatch extends Component {
@@ -43,6 +83,9 @@ export default class StopWatch extends Component {
       miliseconds_counter: 0,
       minutes_counter: 0,
       seconds_counter: 0
+    };
+    this.dial = {
+      getStr() {}
     };
     this.state = this._init_state;
   }
@@ -108,6 +151,7 @@ export default class StopWatch extends Component {
       )
     } else {
       userControls.push(
+      <View>
         <View style={styles.controlButton} key='1'>
           <Button
             onPress={() => this.stopCounting()}
@@ -115,6 +159,10 @@ export default class StopWatch extends Component {
             color={this.buttonColors['stopButton']}
           />
         </View>
+        <View>
+          <Split currentCounterState={this.dial.getStr()}/>
+        </View>
+      </View>
       )
     }
     userControls.push(
@@ -133,7 +181,9 @@ export default class StopWatch extends Component {
         <Dial
           miliseconds_counter={this.state.miliseconds_counter}
           minutes_counter={this.state.minutes_counter}
-          seconds_counter={this.state.seconds_counter}/>
+          seconds_counter={this.state.seconds_counter}
+          ref={(instance) => { this.dial = instance; }}
+        />
         <View style={styles.controls}>
           {userControls}
         </View>
