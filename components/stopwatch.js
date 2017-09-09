@@ -8,72 +8,8 @@ import {
   Button,
 } from 'react-native';
 import { TabNavigator } from 'react-navigation';
-
-class Dial extends Component {
-  constructor(props) {
-    super(props);
-    //this.state = {
-    //  miliseconds_counter: 0,
-    //  minutes_counter: 0,
-    //  seconds_counter: 0
-    //};
-  }
-  render() {
-    return(
-      <Text style={styles.dial}>
-        {this.getStr()}
-      </Text>
-    )
-  }
-
-  formatNumber = (number) => {
-    if (number < 10) {
-      return(`0${number}`);
-    } else {
-      return(number);
-    }
-  }
-
-  getStr = () => {
-    return `${this.formatNumber(this.props.minutes_counter)}:${this.formatNumber(this.props.seconds_counter)}:${this.props.miliseconds_counter+'0'}`
-  }
-}
-
-class Split extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      times: []
-    }
-  }
-
-  splitTime = (ss) => {
-    currentTimes = this.state.times;
-    currentTimes.push(ss);
-    this.setState({times: currentTimes});
-  };
-
-  render() {
-    let timesList = [];
-    for(let time of this.state.times) {
-      timesList.push(
-        <Text>
-          {time}
-        </Text>
-      );
-    };
-
-    return(
-      <View>
-        <Button
-          onPress={() => this.splitTime(this.props.currentCounterState)}
-          title='Split'
-        />
-        {timesList}
-      </View>
-    )
-  }
-}
+import Split from './split.js';
+import Dial from './dial.js';
 
 export default class StopWatch extends Component {
   constructor(props) {
