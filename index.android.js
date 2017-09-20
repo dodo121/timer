@@ -15,6 +15,7 @@ import {
   AsyncStorage
 } from 'react-native';
 import StopWatch from './components/stopwatch';
+import WorldClock from './components/world_clock'
 import { TabNavigator } from 'react-navigation';
 
 //export default class HomeScreen extends Component {
@@ -114,7 +115,7 @@ class HomeScreen extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View>
-        <Text>Hello, Navigation!</Text>
+        <Text>Hello!</Text>
       </View>
     );
   }
@@ -122,8 +123,8 @@ class HomeScreen extends Component {
 
 const timer = TabNavigator({
   HomeScreen: { screen: HomeScreen },
-  StopWatchScreen: { screen: StopWatch }
-  //SubView1: { screen: SubView1 }
+  StopWatchScreen: { screen: StopWatch },
+  WorldClock: { screen: WorldClock }
 });
 
 AppRegistry.registerComponent('timer', () => timer);

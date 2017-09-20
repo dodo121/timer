@@ -87,28 +87,26 @@ export default class StopWatch extends Component {
       )
     } else {
       userControls.push(
-      <View>
-        <View style={styles.controlButton} key='1'>
-          <Button
-            onPress={() => this.stopCounting()}
-            title='Stop'
-            color={this.buttonColors['stopButton']}
-          />
-        </View>
         <View>
-          <Split currentCounterState={this.dial.getStr()}/>
+          <View style={styles.controlButton} key='1'>
+            <Button
+              onPress={() => this.stopCounting()}
+              title='Stop'
+              color={this.buttonColors['stopButton']}
+            />
+          </View>
+          <View style={styles.controlButton} key='2'>
+            <Button
+              onPress={() => this.resetTimer()}
+              title='Reset'
+              />
+          </View>
+          <View>
+            <Split currentCounterState={this.dial.getStr()}/>
+          </View>
         </View>
-      </View>
       )
     }
-    userControls.push(
-      <View style={styles.controlButton} key='2'>
-        <Button
-          onPress={() => this.resetTimer()}
-          title='Reset'
-        />
-      </View>
-    )
 
     //Alert.alert(this.state.minutes_counter);
     const { navigate } = this.props.navigation;
@@ -142,6 +140,6 @@ const styles = StyleSheet.create({
   },
 
   controlButton: {
-    width: 150
+    //width: 150
   }
 });
