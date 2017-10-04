@@ -6,7 +6,8 @@ import {
   Button,
   TextInput,
   FlatList,
-  StyleSheet
+  StyleSheet,
+  AsyncStorage
 } from 'react-native';
 
 class CitiesList extends Component {
@@ -18,7 +19,10 @@ class CitiesList extends Component {
     super(props);
     this.state = {
       itemsSelected: []
-    }
+    };
+    AsyncStorage.getItem('citiesSelected').then(itemsSelected => {
+      this.setState({itemsSelected: JSON.parse(itemsSelected)});
+    });
   };
 
   render() {
@@ -67,8 +71,23 @@ class AddNewCity extends Component {
 //    items = this.state.itemsSelected;
 //    items.push(item);
 //    this.setState({itemsSelected: items});
-    AsyncStorage.setItem('backgroundColor', color.toString());
+//    return new Promise(async (resolve, reject) => {
+      AsyncStorage.getItem('citiesSelected')
+        .then((currentSavedData) => {
+          if(currentSavedData == undefined) {
+            newArray = [item];
+          } else {
+            newArray = JSON.parse(currentSavedData);
+            newArray.push(item);
+          };
+          AsyncStorage.setItem('citiesSelected', JSON.stringify(newArray));
+        });
+//        .then(req => JSON.parse(req));
+//        .then(json => console.log(json));
+//        .then(json => json.push(item))
+//        .then(newArray => ));
     this.props.navigation.navigate('CitiesList');
+//    };
   };
 
   showPrompt = () => {
