@@ -7,34 +7,65 @@ import {
   TextInput,
   FlatList,
   StyleSheet,
-  AsyncStorage
+  AsyncStorage,
+  TouchableOpacity
 } from 'react-native';
 
-class CitiesList extends Component {
-  static navigationOptions = {
-    title: 'World Clock'
-  };
+class CitiesManager extends Component {
+//  static navigationOptions = {
+//    title: 'test',
+//    header: null
+//  };
 
   constructor(props) {
     super(props);
+  }
+
+  render() {
+    return(<Text></Text>);
+  }
+}
+
+class CitiesList extends Component {
+  static navigationOptions = {
+    title: 'World Clock',
+    header: null
+  };
+  constructor(props) {
+    super(props);
     this.state = {
-      itemsSelected: []
+      itemsSelected: [],
+      citiesLoaded: false
     };
     AsyncStorage.getItem('citiesSelected').then(itemsSelected => {
-      this.setState({itemsSelected: JSON.parse(itemsSelected)});
+      this.setState({
+        itemsSelected: JSON.parse(itemsSelected),
+        citiesLoaded: true
+      });
     });
   };
 
   render() {
     const { navigate } = this.props.navigation;
+    if(this.state.citiesLoaded) {
+      cities = <FlatList
+                 data={this.state.itemsSelected}
+                 renderItem={({item}) => <Text key={item} style={styles.selectedListItem}>{item}</Text>}
+                 extraData={this.state}
+               />;
+    } else {
+      cities = <Text>'Loading data please wait...'</Text>;
+    }
     return(
       <View>
-        <Button title='+' onPress={() => {navigate('AddNewCity')}} />
-        <FlatList
-          data={this.state.itemsSelected}
-          renderItem={({item}) => <Text key={item} style={styles.selectedListItem}>{item}</Text>}
-          extraData={this.state}
-        />
+        <TouchableOpacity
+          onPress={() => {navigate('AddNewCity')}}
+          style={{width: 50, height: 50, marginTop: 5, marginLeft: 5, backgroundColor: '#808080'}} >
+          <Text style={{fontSize: 35, color: '#FFF', alignSelf: 'center'}}>+</Text>
+        </TouchableOpacity>
+        <View>
+          {cities}
+        </View>
       </View>
     )
   }
@@ -68,26 +99,17 @@ class AddNewCity extends Component {
   }
 
   newItemSelected = (item) => {
-//    items = this.state.itemsSelected;
-//    items.push(item);
-//    this.setState({itemsSelected: items});
-//    return new Promise(async (resolve, reject) => {
-      AsyncStorage.getItem('citiesSelected')
-        .then((currentSavedData) => {
-          if(currentSavedData == undefined) {
-            newArray = [item];
-          } else {
-            newArray = JSON.parse(currentSavedData);
-            newArray.push(item);
-          };
-          AsyncStorage.setItem('citiesSelected', JSON.stringify(newArray));
-        });
-//        .then(req => JSON.parse(req));
-//        .then(json => console.log(json));
-//        .then(json => json.push(item))
-//        .then(newArray => ));
+    AsyncStorage.getItem('citiesSelected')
+      .then((currentSavedData) => {
+        if(currentSavedData == undefined) {
+          newArray = [item];
+        } else {
+          newArray = JSON.parse(currentSavedData);
+          newArray.push(item);
+        };
+        AsyncStorage.setItem('citiesSelected', JSON.stringify(newArray));
+      });
     this.props.navigation.navigate('CitiesList');
-//    };
   };
 
   showPrompt = () => {
@@ -131,6 +153,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.25
   },
   selectedListItem: {
-    fontSize: 20
+    fontSize: 20,
+    borderColor: '#808080',
+    borderBottomWidth: 0.25,
+    padding: 10
+  },
+  addNewCity: {
+    height: 100,
+    width: 200
   }
 });
