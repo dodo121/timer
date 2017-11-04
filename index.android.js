@@ -9,9 +9,10 @@ import {
   Button,
   AsyncStorage
 } from 'react-native';
+import { TabNavigator } from 'react-navigation';
+
 import StopWatch from './components/stopwatch';
 import WorldClock from './components/world_clock'
-import { TabNavigator } from 'react-navigation';
 
 //export default class HomeScreen extends Component {
 //

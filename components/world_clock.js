@@ -120,6 +120,25 @@ class AddNewCity extends Component {
     this.setState({showPrompt: false});
   };
 
+  searchForCity = (text) => {
+    this.setState({text: text})
+//    fetch('http://gd.geobytes.com/GetCityDetails?callback=?&fqcn=' + text + '.json', {
+//      headers: {
+//        'Accept': 'application/json',
+//        'Content-Type': 'application/json'
+//      },
+//      body: JSON.stringify({
+//
+//      })
+//    })
+    fetch('http://gd.geobytes.com/AutoCompleteCity?callback=?&q=' + text)
+//    fetch('https://jsonplaceholder.typicode.com/users/1')
+      .then((response) => { console.log(response.text()) })
+      .catch((error) => {
+        console.log('Error:', error);
+      });
+  }
+
   render() {
     prompt = null;
     if(this.state.showPrompt) {
@@ -131,7 +150,7 @@ class AddNewCity extends Component {
         <TextInput
           value={this.state.text}
           placeholder={'Search...'}
-          onFocus={() => { this.showPrompt() }}/>
+          onChangeText={(text) => { this.searchForCity(text) }} />
         {prompt}
       </View>
     )
