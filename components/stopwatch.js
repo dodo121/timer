@@ -8,6 +8,7 @@ import {
   Button,
 } from 'react-native';
 import { TabNavigator } from 'react-navigation';
+import { string, object } from 'prop-types'
 
 import Split from './split.js';
 import Dial from './dial.js';
@@ -81,7 +82,7 @@ export default class StopWatch extends Component {
       userControls.push(
         <View style={styles.wideButtonView} key='1'>
           <Button
-            onPress={() => this.startCounting()}
+            onPress={this.startCounting}
             title='Start'
             color={this.buttonColors['startButton']}
             style={styles.splitButton}
@@ -94,14 +95,14 @@ export default class StopWatch extends Component {
           <View style={styles.controls}>
             <View style={styles.controlButton}>
               <Button
-                onPress={() => this.stopCounting()}
+                onPress={this.stopCounting}
                 title='Stop'
                 color={this.buttonColors['stopButton']}
               />
             </View>
             <View style={styles.controlButton}>
               <Button
-                onPress={() => this.resetTimer()}
+                onPress={this.resetTimer}
                 title='Reset'
                 style={styles.controlButton}
               />
