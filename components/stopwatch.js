@@ -60,6 +60,7 @@ export default class StopWatch extends Component {
     if (this.state.seconds_counter < 59) {
       return(this.state.seconds_counter + 1);
     } else {
+      this.setState({minutes_counter: this.state.minutes_counter + 1});
       return 0;
     }
   }
