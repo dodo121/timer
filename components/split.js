@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View, Button, StyleSheet } from 'react-native';
 
 export default class Split extends Component {
   constructor(props) {
@@ -19,7 +19,7 @@ export default class Split extends Component {
     let timesList = [];
     for(let time of this.state.times) {
       timesList.push(
-        <Text>
+        <Text style={styles.timeEntry}>
           {time}
         </Text>
       );
@@ -31,8 +31,20 @@ export default class Split extends Component {
           onPress={() => this.splitTime(this.props.currentCounterState)}
           title='Split'
           />
-        {timesList}
+        <View style={styles.timeEntryView}>
+          {timesList}
+        </View>
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  timeEntryView: {
+    alignItems: 'center'
+  },
+
+  timeEntry: {
+    fontSize: 20
+  }
+});

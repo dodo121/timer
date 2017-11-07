@@ -8,6 +8,7 @@ import {
   Button,
 } from 'react-native';
 import { TabNavigator } from 'react-navigation';
+
 import Split from './split.js';
 import Dial from './dial.js';
 
@@ -77,31 +78,35 @@ export default class StopWatch extends Component {
     let userControls = [];
     if(this.state.action == 'idle') {
       userControls.push(
-        <View style={styles.controlButton} key='1'>
+        <View style={styles.wideButtonView} key='1'>
           <Button
             onPress={() => this.startCounting()}
             title='Start'
             color={this.buttonColors['startButton']}
+            style={styles.splitButton}
           />
         </View>
       )
     } else {
       userControls.push(
         <View>
-          <View style={styles.controlButton} key='1'>
-            <Button
-              onPress={() => this.stopCounting()}
-              title='Stop'
-              color={this.buttonColors['stopButton']}
-            />
-          </View>
-          <View style={styles.controlButton} key='2'>
-            <Button
-              onPress={() => this.resetTimer()}
-              title='Reset'
+          <View style={styles.controls}>
+            <View style={styles.controlButton}>
+              <Button
+                onPress={() => this.stopCounting()}
+                title='Stop'
+                color={this.buttonColors['stopButton']}
               />
+            </View>
+            <View style={styles.controlButton}>
+              <Button
+                onPress={() => this.resetTimer()}
+                title='Reset'
+                style={styles.controlButton}
+              />
+            </View>
           </View>
-          <View>
+          <View style={styles.wideButtonView}>
             <Split currentCounterState={this.dial.getStr()}/>
           </View>
         </View>
@@ -118,9 +123,7 @@ export default class StopWatch extends Component {
           seconds_counter={this.state.seconds_counter}
           ref={(instance) => { this.dial = instance; }}
         />
-        <View style={styles.controls}>
-          {userControls}
-        </View>
+        {userControls}
       </View>
     )
   }
@@ -128,18 +131,21 @@ export default class StopWatch extends Component {
 
 const styles = StyleSheet.create({
   controls: {
+//    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center'
-  },
-
-  dial: {
-    fontWeight: 'bold',
-    fontSize: 70,
-    textAlign: 'center'
+    alignItems: 'flex-start'
   },
 
   controlButton: {
-    //width: 150
-  }
+    width: 130,
+    height: 50
+  },
+
+  wideButtonView: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    marginLeft: 25,
+    marginRight: 25
+  },
 });
