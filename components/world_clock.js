@@ -11,6 +11,8 @@ import {
   TouchableOpacity
 } from 'react-native';
 
+const keysConfig = require('../config.json');
+
 class CitiesManager extends Component {
 //  static navigationOptions = {
 //    title: 'test',
@@ -37,12 +39,33 @@ class CitiesList extends Component {
       itemsSelected: [],
       citiesLoaded: false
     };
+    this.loadCities();
+  };
+
+  loadCities = () => {
     AsyncStorage.getItem('citiesSelected').then(itemsSelected => {
       this.setState({
         itemsSelected: JSON.parse(itemsSelected),
         citiesLoaded: true
       });
     });
+  };
+
+  removeAllCities = () => {
+    AsyncStorage.removeItem('citiesSelected', this.loadCities);
+  };
+
+  shouldComponentUpdate = (nextProps, nextState) => {
+    AsyncStorage.getItem('citiesSelected').then(itemsSelectedStored => {
+      if(nextState['itemsSelected'] && itemsSelectedStored) {
+        if(nextState['itemsSelected'].length != JSON.parse(itemsSelectedStored).length) {
+          this.loadCities();
+        }
+      } else {
+        this.loadCities();
+      }
+    });
+    return true;
   };
 
   render() {
@@ -63,6 +86,9 @@ class CitiesList extends Component {
           style={{width: 50, height: 50, marginTop: 5, marginLeft: 5, backgroundColor: '#808080'}} >
           <Text style={{fontSize: 35, color: '#FFF', alignSelf: 'center'}}>+</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={this.removeAllCities}>
+          <Text>Remove all!</Text>
+        </TouchableOpacity>
         <View>
           {cities}
         </View>
@@ -80,8 +106,8 @@ class Prompt extends Component {
     return(
       <View>
         <FlatList
-          data={['a', 'b']}
-          renderItem={({item}) => <Text key={item} onPress={() => {this.props.newItemSelected(item)}}
+          data={this.props.itemsToShow}
+          renderItem={({item}) => <Text key={item} onPress={() => {this.props.itemSelected(item)}}
           style={styles.listItem}>{item}</Text>}
         />
       </View>
@@ -108,42 +134,30 @@ class AddNewCity extends Component {
           newArray.push(item);
         };
         AsyncStorage.setItem('citiesSelected', JSON.stringify(newArray));
-      });
-    this.props.navigation.navigate('CitiesList');
-  };
-
-  showPrompt = () => {
-    this.setState({showPrompt: true});
-  };
-
-  hidePrompt = () => {
-    this.setState({showPrompt: false});
+      })
+      .then(this.props.navigation.navigate('CitiesList', { reloadCities: true }));
   };
 
   searchForCity = (text) => {
-    this.setState({text: text})
-//    fetch('http://gd.geobytes.com/GetCityDetails?callback=?&fqcn=' + text + '.json', {
-//      headers: {
-//        'Accept': 'application/json',
-//        'Content-Type': 'application/json'
-//      },
-//      body: JSON.stringify({
-//
-//      })
-//    })
-    fetch('http://gd.geobytes.com/AutoCompleteCity?callback=?&q=' + text)
-//    fetch('https://jsonplaceholder.typicode.com/users/1')
-      .then((response) => { console.log(response.text()) })
+    this.setState({text: text});
+    if(text.length > 2) {
+      this.fetchAutocompleteFromApi(this.state.text);
+    }
+  };
+
+  fetchAutocompleteFromApi = (queryText) => {
+    fetch(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${queryText}
+      &types=geocode&key=${keysConfig['googlePlaceApiKey']}`)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({citiesAutocompleteResults: responseJson.predictions.map(c => c['description'])});
+      })
       .catch((error) => {
         console.log('Error:', error);
       });
-  }
+  };
 
   render() {
-    prompt = null;
-    if(this.state.showPrompt) {
-      prompt = <Prompt newItemSelected={(item) => this.newItemSelected(item)}/>;
-    }
     const { navigate } = this.props.navigation;
     return(
       <View>
@@ -151,7 +165,9 @@ class AddNewCity extends Component {
           value={this.state.text}
           placeholder={'Search...'}
           onChangeText={(text) => { this.searchForCity(text) }} />
-        {prompt}
+        <Prompt
+          itemsToShow={this.state.citiesAutocompleteResults}
+          itemSelected={(item) => this.newItemSelected(item)}/>
       </View>
     )
   }

@@ -115,7 +115,6 @@ export default class StopWatch extends Component {
       )
     }
 
-    //Alert.alert(this.state.minutes_counter);
     const { navigate } = this.props.navigation;
     return(
       <View>
@@ -133,7 +132,6 @@ export default class StopWatch extends Component {
 
 const styles = StyleSheet.create({
   controls: {
-//    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'flex-start'
