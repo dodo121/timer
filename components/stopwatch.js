@@ -81,12 +81,10 @@ export default class StopWatch extends Component {
     if(this.state.action == 'idle') {
       userControls.push(
         <View style={styles.wideButtonView} key='1'>
-          <Button
-            onPress={this.startCounting}
-            title='Start'
+          <StartButton
+            onPressCallback={this.startCounting}
             color={this.buttonColors['startButton']}
-            style={styles.splitButton}
-          />
+            style={styles.splitButton}/>
         </View>
       )
     } else {
@@ -94,18 +92,14 @@ export default class StopWatch extends Component {
         <View>
           <View style={styles.controls}>
             <View style={styles.controlButton}>
-              <Button
-                onPress={this.stopCounting}
-                title='Stop'
-                color={this.buttonColors['stopButton']}
-              />
+              <StopButton
+                onPressCallback={this.stopCounting}
+                color={this.buttonColors['stopButton']}/>
             </View>
             <View style={styles.controlButton}>
-              <Button
-                onPress={this.resetTimer}
-                title='Reset'
-                style={styles.controlButton}
-              />
+              <ResetButton
+                onPressCallback={this.resetTimer}
+                style={styles.controlButton}/>
             </View>
           </View>
           <View style={styles.wideButtonView}>
@@ -130,6 +124,30 @@ export default class StopWatch extends Component {
   }
 };
 
+const StartButton = props =>
+  <Button
+    onPress={props.onPressCallback}
+    title='Start'
+    color={props.color}
+    style={props.style}
+  />;
+
+const StopButton = props =>
+  <Button
+    onPress={props.onPressCallback}
+    title='Stop'
+    color={props.color}
+    style={props.style}
+  />;
+
+const ResetButton = props =>
+  <Button
+    onPress={props.onPressCallback}
+    title='Reset'
+    color={props.color}
+    style={props.style}
+  />;
+
 const styles = StyleSheet.create({
   controls: {
     flexDirection: 'row',
@@ -147,5 +165,5 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     marginLeft: 25,
     marginRight: 25
-  },
+  }
 });
