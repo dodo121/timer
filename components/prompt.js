@@ -19,6 +19,7 @@ export default class Prompt extends Component {
     return(
       <View>
         <FlatList
+          keyboardShouldPersistTaps='always'
           data={this.props.itemsToShow}
           renderItem={({item}) => <Text key={item} onPress={() => {this.props.itemSelected(item)}}
           style={styles.listItem}>{item}</Text>}

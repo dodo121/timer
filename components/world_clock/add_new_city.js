@@ -66,7 +66,7 @@ export default class AddNewCity extends Component {
           onChangeText={(text) => { this.searchForCity(text) }} />
         <Prompt
           itemsToShow={this.state.citiesAutocompleteResults}
-          itemSelected={(item) => this.newItemSelected(item)}/>
+          itemSelected={(item) => this.newItemSelected(item)} />
       </View>
     )
   }
