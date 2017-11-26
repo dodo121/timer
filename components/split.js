@@ -17,9 +17,9 @@ export default class Split extends Component {
 
   render() {
     let timesList = [];
-    for(let time of this.state.times) {
+    for(let [index, time] of this.state.times.entries()) {
       timesList.push(
-        <Text style={styles.timeEntry}>
+        <Text style={styles.timeEntry} key={index}>
           {time}
         </Text>
       );

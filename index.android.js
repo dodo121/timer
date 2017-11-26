@@ -12,7 +12,7 @@ import {
 import { TabNavigator } from 'react-navigation';
 
 import StopWatch from './components/stopwatch';
-import WorldClock from './components/world_clock'
+import WorldClock from './components/world_clock/world_clock'
 
 //export default class HomeScreen extends Component {
 //
