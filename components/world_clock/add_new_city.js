@@ -24,6 +24,7 @@ export default class AddNewCity extends Component {
   }
 
   newItemSelected = (item) => {
+    console.log(item);
     AsyncStorage.getItem('citiesSelected')
       .then((currentSavedData) => {
         if(currentSavedData == undefined) {
@@ -31,7 +32,7 @@ export default class AddNewCity extends Component {
         } else {
           newArray = JSON.parse(currentSavedData);
           newArray.push(item);
-        };
+        }
         AsyncStorage.setItem('citiesSelected', JSON.stringify(newArray));
       })
       .then(this.props.navigation.navigate('CitiesList', { reloadCities: true }));
@@ -49,7 +50,11 @@ export default class AddNewCity extends Component {
       &types=geocode&key=${keysConfig['googlePlaceApiKey']}`)
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState({citiesAutocompleteResults: responseJson.predictions.map(c => c['description'])});
+        this.setState({
+          citiesAutocompleteResults: responseJson.predictions.map(
+            c => ({ name: c['description'], placeId: c['place_id'] })
+          )
+        });
       })
       .catch((error) => {
         console.log('Error:', error);

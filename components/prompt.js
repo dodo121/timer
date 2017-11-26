@@ -22,7 +22,7 @@ export default class Prompt extends Component {
           keyboardShouldPersistTaps='always'
           data={this.props.itemsToShow}
           renderItem={({item}) => <Text key={item} onPress={() => {this.props.itemSelected(item)}}
-          style={styles.listItem}>{item}</Text>}
+          style={styles.listItem}>{item.name}</Text>}
           />
       </View>
     )

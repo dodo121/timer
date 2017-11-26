@@ -55,9 +55,12 @@ export default class CitiesList extends Component {
     if(this.state.citiesLoaded) {
       cities = <FlatList
         data={this.state.itemsSelected}
-        renderItem={({item}) => <Text key={item} style={styles.selectedListItem}>{item}</Text>}
-        extraData={this.state}
-        />;
+        renderItem={({item}) =>
+          <View>
+            <Text key={item} style={styles.selectedListItem}>{item.name}</Text>
+          </View>
+        }
+        extraData={this.state}/>;
     } else {
       cities = <Text>'Loading data please wait...'</Text>;
     }
@@ -66,8 +69,7 @@ export default class CitiesList extends Component {
         <Add
           onPressCallback={() => {navigate('AddNewCity')}}
           backgroundStyle={styles.addButtonBackgroundStyle}
-          style={styles.addButtonStyle}
-          />
+          style={styles.addButtonStyle} />
         <TouchableOpacity onPress={this.removeAllCities}>
           <Text>Remove all!</Text>
         </TouchableOpacity>
@@ -85,6 +87,8 @@ const Add = props =>
     style={props.backgroundStyle} >
     <Text style={props.style}>+</Text>
   </TouchableOpacity>
+
+//const CitiesList = props =>
 
 const styles = StyleSheet.create({
   selectedListItem: {
