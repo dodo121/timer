@@ -7,7 +7,9 @@ import {
   FlatList,
   StyleSheet,
   AsyncStorage,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableHighlight,
+  Alert
 } from 'react-native';
 
 export default class CitiesList extends Component {
@@ -25,6 +27,7 @@ export default class CitiesList extends Component {
   };
 
   loadCities = () => {
+    console.log('load cities');
     AsyncStorage.getItem('citiesSelected').then(itemsSelected => {
       this.setState({
         itemsSelected: JSON.parse(itemsSelected),
@@ -35,6 +38,26 @@ export default class CitiesList extends Component {
 
   removeAllCities = () => {
     AsyncStorage.removeItem('citiesSelected', this.loadCities);
+  };
+
+  deleteCityAlert = (city) => {
+    Alert.alert(
+      city.name,
+      'Do you want to remove?',
+      [
+        {text: 'Yes', onPress: () => this.deleteCity(city)},
+        {text: 'Cancel'}
+      ]
+    );
+  };
+
+  deleteCity = (city) => {
+    AsyncStorage.getItem('citiesSelected').then((citiesSelectedAsString) => {
+      let citiesSelected = JSON.parse(citiesSelectedAsString);
+      indexOfCityToRemove = citiesSelected.findIndex((el) => el['placeId'] == city['placeId']);
+      citiesSelected.splice(indexOfCityToRemove, 1);
+      AsyncStorage.setItem('citiesSelected', JSON.stringify(citiesSelected), this.loadCities());
+    });
   };
 
   shouldComponentUpdate = (nextProps, nextState) => {
@@ -57,7 +80,15 @@ export default class CitiesList extends Component {
         data={this.state.itemsSelected}
         renderItem={({item}) =>
           <View>
-            <Text key={item} style={styles.selectedListItem}>{item.name}</Text>
+            <TouchableHighlight
+              onLongPress={() => this.deleteCityAlert(item)}
+              underlayColor='#D3D3D3'>
+              <Text
+                key={item}
+                style={styles.selectedListItem}>
+                {item.name}
+              </Text>
+            </TouchableHighlight>
           </View>
         }
         extraData={this.state}/>;
