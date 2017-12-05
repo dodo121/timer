@@ -1,1 +1,5 @@
-{ googlePlaceApiKey: 'dummy' }
+{
+  googlePlaceAutocompleteApiKey: 'dummy',
+  googleTimeZoneApiKey: 'dummy',
+  googlePlaceDetailsApiKey: 'dummy'
+}

@@ -11,30 +11,64 @@ import {
   TouchableHighlight,
   Alert
 } from 'react-native';
+import { connect } from 'react-redux'
 
-export default class CitiesList extends Component {
+import { loadCities } from '../../data/cities';
+import keysConfig from '../../config.js';
+//import City from '../City.js';
+
+class CitiesList extends Component {
   static navigationOptions = {
     title: 'World Clock',
     header: null
   };
+
   constructor(props) {
     super(props);
-    this.state = {
-      itemsSelected: [],
-      citiesLoaded: false
-    };
-    this.loadCities();
+    //this.state = {
+    //  itemsSelected: [],
+    //  citiesLoaded: false
+    //};
   };
 
-  loadCities = () => {
-    console.log('load cities');
-    AsyncStorage.getItem('citiesSelected').then(itemsSelected => {
-      this.setState({
-        itemsSelected: JSON.parse(itemsSelected),
-        citiesLoaded: true
-      });
-    });
+  componentWillMount = () => {
+    this.props.onLoadCities();
+    //this.loadCities(true);
   };
+
+  //loadCities = (fetchTimeOffset = false) => {
+  //  AsyncStorage.getItem('citiesSelected').then((itemsSelectedAsString) => {
+  //    let citiesSelected = JSON.parse(itemsSelectedAsString);
+  //    if(fetchTimeOffset) {
+  //      for(let city of citiesSelected) {
+  //        let currentTime = new Date().getTime();
+  //        console.log('city in loop', city);
+  //        let cityLocation = Object.values(city.location).join(',');
+  //        fetch(
+  //          `https://maps.googleapis.com/maps/api/timezone/json?location=${cityLocation}&timestamp=${currentTime}&key=${keysConfig['googleTimeZoneApiKey']}`
+  //        ).then((response) =>
+  //            response.json()
+  //        ).then((responseJson) => {
+  //            console.log('time response', responseJson);
+  //          })
+  //      }
+  //    }
+  //    this.setState({
+  //      itemsSelected: citiesSelected,
+  //      citiesLoaded: true
+  //    });
+  //  });
+        //  for(let [index, city] of itemsSelected.entries()) {
+        //
+        //  }
+        //
+        //  console.log(itemsSelected);
+        //  for(let [index, city] of itemsSelected.entries()) {
+        //    debugger;
+        //    let location = Object.values(city.location).join(',');
+      //  }
+      //}
+  //};
 
   removeAllCities = () => {
     AsyncStorage.removeItem('citiesSelected', this.loadCities);
@@ -60,24 +94,26 @@ export default class CitiesList extends Component {
     });
   };
 
-  shouldComponentUpdate = (nextProps, nextState) => {
-    AsyncStorage.getItem('citiesSelected').then(itemsSelectedStored => {
-      if(nextState['itemsSelected'] && itemsSelectedStored) {
-        if(nextState['itemsSelected'].length != JSON.parse(itemsSelectedStored).length) {
-          this.loadCities();
-        }
-      } else {
-        this.loadCities();
-      }
-    });
-    return true;
-  };
+  //shouldComponentUpdate = (nextProps, nextState) => {
+  //  AsyncStorage.getItem('citiesSelected').then(itemsSelectedStored => {
+  //    if(nextState['itemsSelected'] && itemsSelectedStored) {
+  //      if(nextState['itemsSelected'].length != JSON.parse(itemsSelectedStored).length) {
+  //        this.loadCities();
+  //      }
+  //    } else {
+  //      this.loadCities();
+  //    }
+  //  });
+  //  return true;
+  //};
 
   render() {
     const { navigate } = this.props.navigation;
-    if(this.state.citiesLoaded) {
+    if(this.props.loading) {
+      cities = <Text>'Loading data please wait...'</Text>;
+    } else {
       cities = <FlatList
-        data={this.state.itemsSelected}
+        data={this.props.itemsSelected}
         renderItem={({item}) =>
           <View>
             <TouchableHighlight
@@ -91,9 +127,7 @@ export default class CitiesList extends Component {
             </TouchableHighlight>
           </View>
         }
-        extraData={this.state}/>;
-    } else {
-      cities = <Text>'Loading data please wait...'</Text>;
+        extraData={this.props}/>;
     }
     return(
       <View>
@@ -120,6 +154,19 @@ const Add = props =>
   </TouchableOpacity>
 
 //const CitiesList = props =>
+
+const mapStateToProps = (state) => ({
+  itemsSelected: state.value,
+  loading: state.loading
+})
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLoadCities: () => { dispatch(loadCities())}
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CitiesList);
 
 const styles = StyleSheet.create({
   selectedListItem: {

@@ -9,12 +9,14 @@ import {
   AsyncStorage,
   TouchableOpacity
 } from 'react-native';
+import { connect } from 'react-redux'
+import { newCityAdded } from '../../data/cities';
 
 import Prompt from '../prompt';
 
-const keysConfig = require('../../config.json');
+import keysConfig from '../../config.js';
 
-export default class AddNewCity extends Component {
+class AddNewCity extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,19 +25,9 @@ export default class AddNewCity extends Component {
     }
   }
 
-  newItemSelected = (item) => {
-    console.log(item);
-    AsyncStorage.getItem('citiesSelected')
-      .then((currentSavedData) => {
-        if(currentSavedData == undefined) {
-          newArray = [item];
-        } else {
-          newArray = JSON.parse(currentSavedData);
-          newArray.push(item);
-        }
-        AsyncStorage.setItem('citiesSelected', JSON.stringify(newArray));
-      })
-      .then(this.props.navigation.navigate('CitiesList', { reloadCities: true }));
+  newItemSelected = (city) => {
+    this.props.onNewCityAdded(city);
+    this.props.navigation.navigate('CitiesList')
   };
 
   searchForCity = (text) => {
@@ -47,7 +39,7 @@ export default class AddNewCity extends Component {
 
   fetchAutocompleteFromApi = (queryText) => {
     fetch(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${queryText}
-      &types=geocode&key=${keysConfig['googlePlaceApiKey']}`)
+      &types=geocode&key=${keysConfig['googlePlaceAutocompleteApiKey']}`)
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
@@ -76,3 +68,16 @@ export default class AddNewCity extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => (console.log(state)) || {
+  //itemsSelected: state.value,
+  //loading: state.loading
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onNewCityAdded: (city) => { dispatch(newCityAdded(city))}
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddNewCity);
