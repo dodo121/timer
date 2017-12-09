@@ -19,7 +19,7 @@ export default class Prompt extends Component {
     return(
       <View>
         <FlatList
-          keyboardShouldPersistTaps='always'
+          keyboardShouldPersistTaps='handled'
           data={this.props.itemsToShow}
           renderItem={({item}) =>
             <Text

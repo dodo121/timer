@@ -7,7 +7,8 @@ import {
   FlatList,
   StyleSheet,
   AsyncStorage,
-  TouchableOpacity
+  TouchableOpacity,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux'
 import { newCityAdded } from '../../data/cities';
@@ -26,6 +27,7 @@ class AddNewCity extends Component {
   }
 
   newItemSelected = (city) => {
+    Keyboard.dismiss();
     this.props.onNewCityAdded(city);
     this.props.navigation.navigate('CitiesList')
   };
@@ -69,7 +71,7 @@ class AddNewCity extends Component {
   }
 }
 
-const mapStateToProps = (state) => (console.log(state)) || {
+const mapStateToProps = (state) => {
   //itemsSelected: state.value,
   //loading: state.loading
 };
@@ -80,4 +82,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddNewCity);
+export default connect(null, mapDispatchToProps)(AddNewCity);
